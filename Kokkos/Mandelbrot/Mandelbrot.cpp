@@ -1,4 +1,5 @@
 #include <iostream>
+#include <fstream>
 #include <stdlib.h>
 #include <Kokkos_Core.hpp>
 #include <Kokkos_Parallel.hpp>
@@ -8,6 +9,7 @@
 //#include <limits> 
 using std::cout;
 using std::endl;
+using std::ofstream;
 
 using namespace Kokkos;
 
@@ -95,7 +97,8 @@ int main(int argc, char **argv) {
   deep_copy(hcolors, dcolors);
   
   // write
-  fstream output("output.out");
+  ofstream output;
+  output.open ("output.out");
   output << 'P5' << endl;
   output << count_x << count_y << endl;
   output << 255 << endl;
@@ -104,7 +107,7 @@ int main(int argc, char **argv) {
       output << hcolors(i,j);
     }
   } 
-  output.close()
+  output.close();
 
   Kokkos::finalize();
 
