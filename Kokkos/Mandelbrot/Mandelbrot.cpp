@@ -23,10 +23,20 @@ int main(int argc, char **argv) {
   }
 
   float cen_x, cen_y, len_x, len_y;
-  cen_x = std::atoi(argv[1]);
-  cen_y = std::atoi(argv[2]);
-  len_x = std::atoi(argv[3]);
-  len_y = std::atoi(argv[4]);
+  cen_x = std::atof(argv[1]);
+  cen_y = std::atof(argv[2]);
+  len_x = std::atof(argv[3]);
+  len_y = std::atof(argv[4]);
+
+  float min_x = cen_x - len_x/2.0;
+  float max_y = cen_y + len_y/2.0;
+
+  float count_x = 8192; // pixel count
+  float pix_size = len_x/count_x;
+  float count_y = len_y/pix_size;
+
+  // Initialize grid
+  View<float**> grid("grid", count_x, count_y);
 
   Kokkos::finalize();
 
