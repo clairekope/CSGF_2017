@@ -1,8 +1,8 @@
 KOKKOS_PATH = ${HOME}/kokkos
 KOKKOS_DEVICES = "Cuda"
-EXE_NAME = "mandelbrot"
+EXE_NAME = "Mandelbrot"
 
-SRC = VecAdd.cpp
+SRC = Mandelbrot.cpp
 
 default: build
 
