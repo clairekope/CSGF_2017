@@ -17,9 +17,11 @@ struct MandelbrotEv{
   View<unsigned int **> color;
   View<complex<double>**> C;
   int count_x;
+  int psize;
   
   MandelbrotEv(View<complex<double> **> C, View<unsigned int **> color,
-               int count_x): C(C), color(color), count_x(count_x) {}
+               int count_x, int psize): 
+                C(C), color(color), count_x(count_x), psize(psize) {}
 
   KOKKOS_INLINE_FUNCTION
   void operator() (int k) const{
@@ -28,23 +30,25 @@ struct MandelbrotEv{
     int j = k/count_x;
 
     // Iterate a single pixel
-
-    int iter=0, max = 1000;
-    double rad=0.0, rad_max=2.0;
-    complex<double> Z(0,0);
+    int iter=0, max = 10000;
+    double rad=0.0, rad_max=18.0, d;
+    complex<double> Z(0,0), dZ(0,0);
 
     while (rad<rad_max && iter<max){
+      dZ = 2.0*Z*dZ+1;
       Z = Z*Z + C(i,j);
       rad = abs(Z);
+      d = 2.0 * ln(abs(Z)) * abs(Z)/abs(dZ);
       ++iter;
-      if (iter<max) {
-        color(i,j) = 0;
+      
+      // Convert distance to greyscale
+      if (d < 0.5*psize) {
+        color(i,j) = pow( d/(0.5*psize), 1.0/3.0) * 255;
       }
       else {
         color(i,j) = 255;
       }
     }
-  }
 };
 
 int main(int argc, char **argv) {
