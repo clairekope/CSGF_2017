@@ -54,7 +54,23 @@ struct MandelbrotEv{
 
   KOKKOS_INLINE_FUNCTION
   void operator() (int i) const{
-    // actual function operations
-    color = 2;
+
+    // Iterate a single pixel
+
+    int iter=0, max = 1000;
+    double rad=0.0, rad_max=2.0;
+    complex<double> *Z(0,0);
+
+    while (rad<rad_max && iter<max){
+      Z = Z*Z + C[i];
+      rad = abs(C[i]);
+      ++iter;
+      if (iter<max) {
+        color[i] = 0;
+      }
+      else {
+        color[i] = 1;
+      }
+    }
   }
 };
