@@ -104,17 +104,17 @@ cout << "parallel for" << endl;
   
 cout << "colors copy" << endl;
   // write
-  ofstream output;
-  output.open ("output.out");
-  output << 'P5' << endl;
-  output << count_x << count_y << endl;
-  output << 255 << endl;
+  FILE * fid = fopen("image.txt","wb");
+  fprintf(fid,"P5\n");
+  fprintf(fid,"%i %i\n",count_x,count_y);
+  fprintf(fid,"255\n");
   for (int i=0; i<count_x; ++i) {
     for (int j=0; j<count_y; ++j) {
-      output << hcolors(i,j);
+        unsigned char tmp = hcolors(i,j);
+	fwrite(&tmp,sizeof(unsigned char),1,fid);      
     }
-  } 
-  output.close();
+  }
+ fclose(fid); 
  }
   Kokkos::finalize();
 
