@@ -11,6 +11,34 @@ using std::endl;
 
 using namespace Kokkos;
 
+struct MandelbrotEv{
+ View<unsigned int **> color;
+ View<complex<double>**, LayoutRight, HostSpace> C;
+  MandelbrotEv(Kokkos::View<Kokkos::complex<double> **, Kokkos::LayoutRight, Kokkos::HostSpace> C, Kokkos::View<unsigned int **> color): C(C), color(color) {}
+
+  KOKKOS_INLINE_FUNCTION
+  void operator() (int i, int j) const{
+
+    // Iterate a single pixel
+
+    int iter=0, max = 1000;
+    double rad=0.0, rad_max=2.0;
+    complex<double> Z(0,0);
+
+    while (rad<rad_max && iter<max){
+      Z = Z*Z + C(i,j);
+      rad = abs(Z);
+      ++iter;
+      if (iter<max) {
+        color(i,j) = 0;
+      }
+      else {
+        color(i,j) = 1;
+      }
+    }
+  }
+};
+
 int main(int argc, char **argv) {
   // Initialize MPI before Kokkos
   MPI_Init(&argc, &argv);
@@ -38,7 +66,7 @@ int main(int argc, char **argv) {
   float count_y = len_y/pix_size;
 
   // Initialize grid
-  View<float**> dcolors("color_grid", count_x, count_y);
+  View<unsigned int**> dcolors("color_grid", count_x, count_y);
   View<complex<double>**, LayoutRight, HostSpace> 
       hcmplx("cmplx_grid", count_x, count_y);
   
@@ -70,30 +98,3 @@ int main(int argc, char **argv) {
   return 0;
 }
 
-struct MandelbrotEv{
-  unsigned int *color;
-  complex<double> *C;
-  MandelbrotEv(complex<double> *C, unsigned int *color): C{C}, color{color} {}
-
-  KOKKOS_INLINE_FUNCTION
-  void operator() (int i) const{
-
-    // Iterate a single pixel
-
-    int iter=0, max = 1000;
-    double rad=0.0, rad_max=2.0;
-    complex<double> Z(0,0);
-
-    while (rad<rad_max && iter<max){
-      Z = Z*Z + C[i];
-      rad = abs(Z);
-      ++iter;
-      if (iter<max) {
-        color[i] = 0;
-      }
-      else {
-        color[i] = 1;
-      }
-    }
-  }
-};
