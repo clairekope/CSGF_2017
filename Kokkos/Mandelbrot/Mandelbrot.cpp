@@ -51,14 +51,17 @@ int main(int argc, char **argv) {
       hcmplx(i,j) = complex<double>(min_x + i*pix_size, max_y - j*pix_size);
     }
   }
-  deep_copy(dcmplx, hcmplx);
+  deep_copy(dcmplx, hcmplx); // Destination, source
   
   // Solve Mandelbrot
-  // parallel_for
+  MandelbrotEv grid(dcmplx, dcolors);
+  parallel_for(count_x, grid);
   
   // deep copy back to host
+  deep_copy(hcolors, dcolors);
   
   // write
+  
 
   Kokkos::finalize();
 
