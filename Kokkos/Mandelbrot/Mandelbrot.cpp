@@ -12,12 +12,19 @@ using std::endl;
 using namespace Kokkos;
 
 struct MandelbrotEv{
- View<unsigned int **> color;
- View<complex<double>**, LayoutRight, HostSpace> C;
-  MandelbrotEv(Kokkos::View<Kokkos::complex<double> **, Kokkos::LayoutRight, Kokkos::HostSpace> C, Kokkos::View<unsigned int **> color): C(C), color(color) {}
+  View<unsigned int **> color;
+  View<complex<double>**, LayoutRight, HostSpace> C;
+  int count_x;
+  
+  MandelbrotEv(View<Kokkos::complex<double> **, LayoutRight, HostSpace> C,
+   View<unsigned int **> color, int count_x): 
+   C(C), color(color), count_x(count_x) {}
 
   KOKKOS_INLINE_FUNCTION
-  void operator() (int i, int j) const{
+  void operator() (int k) const{
+
+    int i = k%count_x;
+    int j = k/count_x;
 
     // Iterate a single pixel
 
@@ -83,7 +90,7 @@ int main(int argc, char **argv) {
   
   // Solve Mandelbrot
   MandelbrotEv grid(dcmplx, dcolors);
-  parallel_for(count_x, grid);
+  parallel_for(count_x*count_y, grid);
   
   // deep copy back to host
   deep_copy(hcolors, dcolors);
