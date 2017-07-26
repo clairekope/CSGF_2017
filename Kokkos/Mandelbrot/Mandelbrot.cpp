@@ -53,6 +53,7 @@ int main(int argc, char **argv) {
 
   // Initialize Kokkos
   Kokkos::initialize(argc, argv);
+  {
 
   // Initialze grid properties from command line
   if (argc < 5){
@@ -69,9 +70,9 @@ int main(int argc, char **argv) {
   float min_x = cen_x - len_x/2.0;
   float max_y = cen_y + len_y/2.0;
 
-  float count_x = 8192; // pixel count
+  int count_x = 8192; // pixel count
   float pix_size = len_x/count_x;
-  float count_y = len_y/pix_size;
+  int count_y = len_y/pix_size;
 
   // Initialize grid
   View<unsigned int**> dcolors("color_grid", count_x, count_y);
@@ -79,37 +80,42 @@ int main(int argc, char **argv) {
   
   auto hcolors = create_mirror_view(dcolors);
   auto hcmplx = create_mirror_view(dcmplx);
+
+  cout << "Fine up to here!" << endl;
   
   // fill cmplx and copy to device
-  for (int i=0; i<count_y; ++i) {
-    for (int j=0; j<count_x; ++j) {
-      cout << min_x + i*pix_size << max_y - j*pix_size << endl;
+  for (int i=0; i<count_x; ++i) {
+    for (int j=0; j<count_y; ++j) {
+      //cout << min_x + i*pix_size << max_y - j*pix_size << endl;
       hcmplx(i,j) = complex<double>(min_x + i*pix_size, max_y - j*pix_size);
     }
   }
   deep_copy(dcmplx, hcmplx); // Destination, source
-  
+cout << "cmplx copy" << endl;  
+
   // Solve Mandelbrot
   int prod = count_x*count_y;
   MandelbrotEv grid(dcmplx, dcolors, count_x);
   parallel_for(prod, grid);
   
+cout << "parallel for" << endl;
   // deep copy back to host
   deep_copy(hcolors, dcolors);
   
+cout << "colors copy" << endl;
   // write
   ofstream output;
   output.open ("output.out");
   output << 'P5' << endl;
   output << count_x << count_y << endl;
   output << 255 << endl;
-  for (int i=0; i<count_y; ++i) {
-    for (int j=0; j<count_x; ++j) {
+  for (int i=0; i<count_x; ++i) {
+    for (int j=0; j<count_y; ++j) {
       output << hcolors(i,j);
     }
   } 
   output.close();
-
+ }
   Kokkos::finalize();
 
   MPI_Finalize();
