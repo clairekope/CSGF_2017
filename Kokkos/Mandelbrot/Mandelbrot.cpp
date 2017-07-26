@@ -41,7 +41,7 @@ struct MandelbrotEv{
         color(i,j) = 0;
       }
       else {
-        color(i,j) = 1;
+        color(i,j) = 255;
       }
     }
   }
