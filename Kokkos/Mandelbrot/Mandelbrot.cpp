@@ -97,7 +97,16 @@ int main(int argc, char **argv) {
   deep_copy(hcolors, dcolors);
   
   // write
-  
+  fstream output("output.out");
+  output << 'P5' << endl;
+  output << count_x << count_y << endl;
+  output << 255 << endl;
+  for (int i=0; i<count_y; ++i) {
+    for (int j=0; j<count_x; ++j) {
+      output << hcolors(i,j);
+    }
+  } 
+  output.close()
 
   Kokkos::finalize();
 
