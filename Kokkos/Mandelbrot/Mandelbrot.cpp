@@ -89,8 +89,9 @@ int main(int argc, char **argv) {
   deep_copy(dcmplx, hcmplx); // Destination, source
   
   // Solve Mandelbrot
-  MandelbrotEv grid(dcmplx, dcolors);
-  parallel_for(count_x*count_y, grid);
+  int prod = count_x*count_y;
+  MandelbrotEv grid(dcmplx, dcolors, count_x);
+  parallel_for(prod, grid);
   
   // deep copy back to host
   deep_copy(hcolors, dcolors);
