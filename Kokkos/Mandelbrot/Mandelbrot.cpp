@@ -18,7 +18,7 @@ struct MandelbrotEv{
   View<complex<double>**> C;
   int count_x;
   
-  MandelbrotEv(View<Kokkos::complex<double> **> C, View<unsigned int **> color,
+  MandelbrotEv(View<complex<double> **> C, View<unsigned int **> color,
                int count_x): C(C), color(color), count_x(count_x) {}
 
   KOKKOS_INLINE_FUNCTION
@@ -83,6 +83,7 @@ int main(int argc, char **argv) {
   // fill cmplx and copy to device
   for (int i=0; i<count_y; ++i) {
     for (int j=0; j<count_x; ++j) {
+      cout << min_x + i*pix_size << max_y - j*pix_size << endl;
       hcmplx(i,j) = complex<double>(min_x + i*pix_size, max_y - j*pix_size);
     }
   }
