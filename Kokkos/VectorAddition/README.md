@@ -24,3 +24,7 @@ KOKKOS_DEVICES=Cuda
 KOKKOS_DEVICES=OpenMP
 KOKKOS_DEVICES=Serial
 ```
+Then:
+```
+mpirun -n 1 ./vec_add.cuda --kokkos-ndevices=1
+```
