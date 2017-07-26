@@ -46,3 +46,15 @@ int main(int argc, char **argv) {
 
   return 0;
 }
+
+struct MandelbrotEv{
+  unsigned int *color;
+  complex<double> *C;
+  MandelbrotEv(complex<double> *C, unsigned int *color): C{C}, color{color} {}
+
+  KOKKOS_INLINE_FUNCTION
+  void operator() (int i) const{
+    // actual function operations
+    color = 2;
+  }
+};
