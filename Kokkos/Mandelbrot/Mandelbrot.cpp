@@ -38,7 +38,27 @@ int main(int argc, char **argv) {
   float count_y = len_y/pix_size;
 
   // Initialize grid
-  View<float**> grid("grid", count_x, count_y);
+  View<float**> dcolors("color_grid", count_x, count_y);
+  View<complex<double>**, LayoutRight, Host> 
+      hcmplx("cmplx_grid", count_x, count_y);
+  
+  View<float**, Host> hcolors = create_mirror_view(dcolors);
+  View<complex<double>**> dcmplx = create_mirror_view(hcmplx);
+  
+  // fill cmplx and copy to device
+  for (int i=0; i<count_y; ++i) {
+    for (int j=0; j<count_x; ++j) {
+      hcmplex[i][j] = complex<double>(min_x + i*pix_size, max_y - j*pix_size);
+    }
+  }
+  deep_copy(dcmplx, hcmplx);
+  
+  // Solve Mandelbrot
+  // parallel_for
+  
+  // deep copy back to host
+  
+  // write
 
   Kokkos::finalize();
 
@@ -63,7 +83,7 @@ struct MandelbrotEv{
 
     while (rad<rad_max && iter<max){
       Z = Z*Z + C[i];
-      rad = abs(C[i]);
+      rad = abs(Z);
       ++iter;
       if (iter<max) {
         color[i] = 0;
