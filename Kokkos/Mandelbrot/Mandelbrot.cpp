@@ -9,6 +9,8 @@
 using std::cout;
 using std::endl;
 
+using namespace Kokkos;
+
 int main(int argc, char **argv) {
   // Initialize MPI before Kokkos
   MPI_Init(&argc, &argv);
