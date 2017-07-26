@@ -39,16 +39,16 @@ int main(int argc, char **argv) {
 
   // Initialize grid
   View<float**> dcolors("color_grid", count_x, count_y);
-  View<complex<double>**, LayoutRight, Host> 
+  View<complex<double>**, LayoutRight, HostSpace> 
       hcmplx("cmplx_grid", count_x, count_y);
   
-  View<float**, Host> hcolors = create_mirror_view(dcolors);
-  View<complex<double>**> dcmplx = create_mirror_view(hcmplx);
+  auto hcolors = create_mirror_view(dcolors);
+  auto dcmplx = create_mirror_view(hcmplx);
   
   // fill cmplx and copy to device
   for (int i=0; i<count_y; ++i) {
     for (int j=0; j<count_x; ++j) {
-      hcmplex[i][j] = complex<double>(min_x + i*pix_size, max_y - j*pix_size);
+      hcmplx(i,j) = complex<double>(min_x + i*pix_size, max_y - j*pix_size);
     }
   }
   deep_copy(dcmplx, hcmplx);
@@ -79,7 +79,7 @@ struct MandelbrotEv{
 
     int iter=0, max = 1000;
     double rad=0.0, rad_max=2.0;
-    complex<double> *Z(0,0);
+    complex<double> Z(0,0);
 
     while (rad<rad_max && iter<max){
       Z = Z*Z + C[i];
