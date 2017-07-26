@@ -35,10 +35,10 @@ struct MandelbrotEv{
     complex<double> Z(0,0), dZ(0,0);
 
     while (rad<rad_max && iter<max){
-      dZ = 2.0*Z*dZ+1;
+      dZ = 2.0*Z*dZ+complex<double>(1,0);
       Z = Z*Z + C(i,j);
       rad = abs(Z);
-      d = 2.0 * ln(abs(Z)) * abs(Z)/abs(dZ);
+      d = 2.0 * log(abs(Z)) * abs(Z)/abs(dZ);
       ++iter;
       
       // Convert distance to greyscale
@@ -49,6 +49,8 @@ struct MandelbrotEv{
         color(i,j) = 255;
       }
     }
+  
+  }
 };
 
 int main(int argc, char **argv) {
@@ -99,7 +101,7 @@ cout << "cmplx copy" << endl;
 
   // Solve Mandelbrot
   int prod = count_x*count_y;
-  MandelbrotEv grid(dcmplx, dcolors, count_x);
+  MandelbrotEv grid(dcmplx, dcolors, count_x,pix_size);
   parallel_for(prod, grid);
   
 cout << "parallel for" << endl;
