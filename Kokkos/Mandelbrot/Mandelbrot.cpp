@@ -108,10 +108,10 @@ cout << "colors copy" << endl;
   fprintf(fid,"P5\n");
   fprintf(fid,"%i %i\n",count_x,count_y);
   fprintf(fid,"255\n");
-  for (int i=0; i<count_x; ++i) {
-    for (int j=0; j<count_y; ++j) {
+  for (int j=0; j<count_y; ++j) {
+    for (int i=0; i<count_x; ++i) {
         unsigned char tmp = hcolors(i,j);
-	fwrite(&tmp,sizeof(unsigned char),1,fid);      
+      fwrite(&tmp,sizeof(unsigned char),1,fid);      
     }
   }
  fclose(fid); 
