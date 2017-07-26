@@ -13,12 +13,11 @@ using namespace Kokkos;
 
 struct MandelbrotEv{
   View<unsigned int **> color;
-  View<complex<double>**, LayoutRight, HostSpace> C;
+  View<complex<double>**> C;
   int count_x;
   
-  MandelbrotEv(View<Kokkos::complex<double> **, LayoutRight, HostSpace> C,
-   View<unsigned int **> color, int count_x): 
-   C(C), color(color), count_x(count_x) {}
+  MandelbrotEv(View<Kokkos::complex<double> **> C, View<unsigned int **> color,
+               int count_x): C(C), color(color), count_x(count_x) {}
 
   KOKKOS_INLINE_FUNCTION
   void operator() (int k) const{
@@ -74,11 +73,10 @@ int main(int argc, char **argv) {
 
   // Initialize grid
   View<unsigned int**> dcolors("color_grid", count_x, count_y);
-  View<complex<double>**, LayoutRight, HostSpace> 
-      hcmplx("cmplx_grid", count_x, count_y);
+  View<complex<double>**> dcmplx("cmplx_grid", count_x, count_y);
   
   auto hcolors = create_mirror_view(dcolors);
-  auto dcmplx = create_mirror_view(hcmplx);
+  auto hcmplx = create_mirror_view(dcmplx);
   
   // fill cmplx and copy to device
   for (int i=0; i<count_y; ++i) {
